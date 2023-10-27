@@ -11,7 +11,7 @@
 
 - 🤝 I’m looking for help with [MayRedstone](https://github.com/CrazyKnight144hz/MayRedstone)
 
-- 👨‍💻 All of my projects are available at [https://github.com/CrazyKnight144hz](https://github.com/CrazyKnight144hz)
+- 👨‍💻 All of my projects are available at [https://github.com/CrazyKnight144hz](https://github.com/maystudios)
 
 - 💬 Ask me about **C++, Unreal Engine, CUDA and co.**
 
