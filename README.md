@@ -3,7 +3,7 @@
 
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=maystudios&label=Profile%20views&color=0e75b6&style=flat" alt="maystudios" /> </p>
 
-<p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=crazyknight144hz" alt="crazyknight144hz" /></a> </p>
+<p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=maystudios" alt="maystudios" /></a> </p>
 
 - 🔭 I’m currently working on [MayCore](https://github.com/maystudios/MayCore)
 
