@@ -1,7 +1,7 @@
 <h1 align="center">Hi 👋, I'm Sven Fredrik Maibaum (MayStudios)</h1>
 <h3 align="center">I am a German full stack developer and work increasingly in the games industry. In my spare time I also deal with unsolved computer science problems, just for fun. ;)</h3>
 
-<p align="left"> <img src="https://komarev.com/ghpvc/?username=crazyknight144hz&label=Profile%20views&color=0e75b6&style=flat" alt="crazyknight144hz" /> </p>
+<p align="left"> <img src="https://komarev.com/ghpvc/?username=maystudios&label=Profile%20views&color=0e75b6&style=flat" alt="maystudios" /> </p>
 
 <p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=crazyknight144hz" alt="crazyknight144hz" /></a> </p>
 
