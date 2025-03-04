@@ -2,23 +2,37 @@ name: Generate Snake
 
 on:
   schedule:
-    - cron: "0 */24 * * *" 
-  # allows to manually run the job at any time
+    - cron: "0 0,6,12,18 * * *"  # runs 4 times a day (UTC)
   workflow_dispatch:
-  
-  # run on every push on the master branch
   push:
     branches:
-    - main
+      - main
 
 jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
+      - name: Decide whether to run snake generation (schedule only)
+        if: github.event_name == 'schedule'
+        id: decision
+        run: |
+          # Generate a random number between 0 and 99.
+          r=$(( RANDOM % 100 ))
+          echo "Random number: $r"
+          if [ "$r" -lt 50 ]; then
+            echo "should_run=true" >> $GITHUB_OUTPUT
+            echo "Proceeding with snake generation."
+          else
+            echo "should_run=false" >> $GITHUB_OUTPUT
+            echo "Skipping snake generation this time."
+          fi
+
       - name: Checkout Repository
+        if: github.event_name != 'schedule' || steps.decision.outputs.should_run == 'true'
         uses: actions/checkout@v3
 
       - name: Generate Snake
+        if: github.event_name != 'schedule' || steps.decision.outputs.should_run == 'true'
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
@@ -27,6 +41,7 @@ jobs:
             dist/github-snake-dark.svg?palette=github-dark
 
       - name: Commit & Push Changes
+        if: github.event_name != 'schedule' || steps.decision.outputs.should_run == 'true'
         uses: EndBug/add-and-commit@v9
         with:
           message: "Updated GitHub contribution snake animation"
