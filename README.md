@@ -38,5 +38,5 @@
 </p>
 
 ![](https://nirzak-streak-stats.vercel.app/?user=maystudios&bg_color=45,5a17ba,9c1efe&hide_border=false) <br/>
-![readme-stats](https://github-readme-stats.vercel.app/api?username=maystudios\&bg_color=30,e96443,904e95\&title_color=fff\&text_color=fff)
+![readme-stats](https://github-readme-stats.vercel.app/api?username=maystudios\&bg_color=30,5a17ba,9c1efe\&title_color=fff\&text_color=fff)
 
