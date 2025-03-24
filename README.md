@@ -37,9 +37,8 @@
 <a href="https://dev.to/maystudios" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/devto.svg" alt="maystudios" height="30" width="40" /></a>
 </p>
 
-<p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=maystudios&show_icons=true&locale=en&layout=compact" alt="maystudios" /></p>
-
-<p>&nbsp;<img align="center" src="https://github-readme-stats.vercel.app/api?username=maystudios&show_icons=true&locale=en" alt="maystudios" /></p>
-
-<p><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=maystudios&" alt="maystudios" /></p>
+<br/>
+![](https://nirzak-streak-stats.vercel.app/?user=maystudios&bg_color=45,5a17ba,9c1efe&hide_border=false)
+<br/>
+![](https://github-readme-stats.vercel.app/api/top-langs/?username=maystudios&bg_color=45,5a17ba,9c1efe&hide_border=false&include_all_commits=false&count_private=false&layout=compact)
 
