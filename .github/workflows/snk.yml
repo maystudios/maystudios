@@ -1,121 +1,30 @@
-name: Generate Snake (random weekdays)
+name: Generate Snake (daily simple)
 
 on:
   schedule:
-    # Heartbeat every 10 minutes, Monday..Friday (UTC). Actual runs are gated below.
-    - cron: "*/10 * * * 1-5"
+    # Once per day at 06:00 UTC (Mon–Sun).
+    - cron: "0 6 * * *"
   workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [ main ]
+
+# Needed to push the generated SVGs back to the repo
+permissions:
+  contents: write
+
+# Prevent overlapping runs if a manual trigger happens near the schedule
+concurrency:
+  group: snake
+  cancel-in-progress: true
 
 jobs:
   generate:
     runs-on: ubuntu-latest
-    env:
-      STATE_FILE: .github/snake_state.json
-      INTERVAL_MINUTES: "10"  # must match the cron interval above
     steps:
-      - name: Checkout repository (always)
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Plan & decide (schedule only)
-        if: github.event_name == 'schedule'
-        id: plan
-        run: |
-          set -euo pipefail
-          mkdir -p "$(dirname "$STATE_FILE")"
-
-          python3 - <<'PY' >> "$GITHUB_OUTPUT"
-          import os, json, random, datetime, math
-
-          state_path = os.environ.get("STATE_FILE", ".github/snake_state.json")
-          interval_minutes = int(os.environ.get("INTERVAL_MINUTES", "10"))
-
-          now = datetime.datetime.utcnow()
-          today = now.date().isoformat()
-          dow = now.isoweekday()  # 1=Mon .. 7=Sun
-
-          # Load existing state (if any and for today)
-          state = {"date": today, "target": None, "sofar": 0}
-          existing = None
-          if os.path.exists(state_path):
-            try:
-              with open(state_path, "r") as f:
-                existing = json.load(f)
-            except Exception:
-              existing = None
-
-          if existing and existing.get("date") == today:
-            state = existing
-
-          new_day = (existing is None) or (existing.get("date") != today) or (state.get("target") is None)
-
-          # Choose today's target
-          if new_day:
-            if dow == 1:   # Mon
-              target = 1
-            elif dow == 2: # Tue
-              target = 4
-            elif dow == 3: # Wed
-              target = 2
-            elif dow in (4,5):  # Thu/Fri: random 0..6 (0 with 5%)
-              if random.random() < 0.05:
-                target = 0
-              else:
-                target = random.randint(1, 6)
-            else:
-              target = 0  # Weekend safety (shouldn't happen due to cron)
-
-            state = {"date": today, "target": target, "sofar": 0}
-
-            # Persist plan immediately so the day’s choice is stable (even if target=0).
-            with open(state_path, "w") as f:
-              json.dump(state, f)
-            print("STATE_CHANGED=true")
-          else:
-            print("STATE_CHANGED=false")
-
-          # Compute remaining triggers in the day based on the heartbeat interval
-          minute_of_day = now.hour * 60 + now.minute
-          # Number of future heartbeats including the current 10-min slot end
-          remaining_triggers = max(0, math.floor((24*60 - minute_of_day - 1) / interval_minutes) + 1)
-
-          remaining_runs = max(0, state["target"] - state["sofar"])
-
-          should_run = False
-          force = False
-          if remaining_runs > 0:
-            if remaining_triggers <= remaining_runs:
-              should_run = True
-              force = True
-            else:
-              p = remaining_runs / remaining_triggers
-              # Draw Bernoulli(p) to spread runs randomly across the day
-              should_run = (random.random() < p)
-
-          if should_run:
-            state["sofar"] += 1
-            with open(state_path, "w") as f:
-              json.dump(state, f)
-            print(f"SHOULD_RUN=true")
-            print(f"RUN_NUMBER={state['sofar']}")
-          else:
-            print("SHOULD_RUN=false")
-
-          print(f"PLANNED_TARGET={state['target']}")
-          PY
-
-      - name: Commit daily plan (if set and not running now)
-        if: github.event_name == 'schedule' && steps.plan.outputs.STATE_CHANGED == 'true' && steps.plan.outputs.SHOULD_RUN != 'true'
-        uses: EndBug/add-and-commit@v9
-        with:
-          add: ${{ env.STATE_FILE }}
-          message: "ci(snake): plan ${{ steps.plan.outputs.PLANNED_TARGET }} run(s) for ${{ env.STATE_FILE }}"
-          push: true
-
       - name: Generate Snake
-        if: github.event_name != 'schedule' || steps.plan.outputs.SHOULD_RUN == 'true'
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
@@ -123,14 +32,9 @@ jobs:
             dist/github-snake.svg
             dist/github-snake-dark.svg?palette=github-dark
 
-      - name: Commit & Push Changes (art + state)
-        if: github.event_name != 'schedule' || steps.plan.outputs.SHOULD_RUN == 'true'
+      - name: Commit & Push Changes
         uses: EndBug/add-and-commit@v9
         with:
-          message: >-
-            Updated GitHub contribution snake animation
-            ${{ github.event_name == 'schedule' && steps.plan.outputs.RUN_NUMBER && format('(run {0}/{1})', steps.plan.outputs.RUN_NUMBER, steps.plan.outputs.PLANNED_TARGET) || '' }}
-          add: |
-            dist/*.svg
-            ${{ env.STATE_FILE }}
+          add: dist/*.svg
+          message: "ci(snake): daily update"
           push: true
